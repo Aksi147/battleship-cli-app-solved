@@ -88,10 +88,17 @@ function printBoard(board) {
 //prompt 1
 console.log("Welcome to Battleship!");
 reveal(board3);
-const wantToPlay = readlineSync.keyInYN("Would you like to play?");
-const userInput = readlineSync.question("Type in your coordinate!");
-if (wantToPlay) return userInput();
+/* const wantToPlay = readlineSync.keyInYN("Would you like to play?");
 if (!wantToPlay) {
   console.log("Fine! I didnt want to play either 🥲");
   process.exit(0);
+} */
+
+let userInput = readlineSync.question("Type in your coordinate!");
+
+if (userInput.match(/[A-C][0-2]/i)) {
+  console.log("the coordinate works");
+}
+while (!userInput.match(/^[A-C][0-2]$/i)) {
+  userInput = readlineSync.question("Type in your coordinate!");
 }
