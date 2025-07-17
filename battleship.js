@@ -102,3 +102,5 @@ if (userInput.match(/[A-C][0-2]/i)) {
 while (!userInput.match(/^[A-C][0-2]$/i)) {
   userInput = readlineSync.question("Type in your coordinate!");
 }
+
+const [] = [];
