@@ -94,13 +94,20 @@ if (!wantToPlay) {
   process.exit(0);
 } */
 
-let userInput = readlineSync.question("Type in your coordinate!");
+let gameOver = false;
 
-if (userInput.match(/[A-C][0-2]/i)) {
-  console.log("the coordinate works");
-}
-while (!userInput.match(/^[A-C][0-2]$/i)) {
-  userInput = readlineSync.question("Type in your coordinate!");
+while (gameOver === false) {
+  function guessCoord() {
+    let userInput = readlineSync.question("Type in your coordinate!");
+
+    while (!userInput.match(/[A-C][0-2]/i)) {
+      userInput = readlineSync.question("Please type in a valid coordinate!");
+    }
+    if (userInput.match(/[A-C][0-2]/i)) {
+      console.log("the coordinate works");
+    }
+  }
+  guessCoord();
 }
 
 const [] = [];
