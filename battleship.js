@@ -9,20 +9,22 @@ const miss = "❗";
 let board3 = [
   [
     { type: "large", id: 1, hit: false }, // Represents position A0
-    { type: "small", hit: false }, // Represents position A1
-    { type: "small", hit: false }, // Represents position A2
+    { type: "empty", hit: false }, // Represents position A1
+    { type: "empty", hit: false }, // Represents position A2
   ],
   [
-    { type: "large", id: 1, hit: false }, // Represents position B0
+    { type: "large", hit: false }, // Represents position B0
     { type: "empty", hit: false }, // Represents position B1
     { type: "empty", hit: false }, // Represents position B2
   ],
   [
-    { type: "large", id: 1, hit: false }, // Represents position C0
-    { type: "empty", hit: false }, // Represents position C1
-    { type: "empty", hit: false }, // Represents position C2
+    { type: "large", hit: false }, // Represents position C0
+    { type: "small", id: 1, hit: false }, // Represents position C1
+    { type: "small", hit: false }, // Represents position C2
   ],
 ];
+
+const rowMap = { A: 0, B: 1, C: 2 };
 
 // inputs
 function inputs(board) {
@@ -31,6 +33,17 @@ function inputs(board) {
     result.push(...board[row]);
   }
   return result;
+}
+
+function allShipsDestroyed(board) {
+  let gameOver = false;
+  if (!inputs(board).includes("large") && !inputs(board).includes("small")) {
+    gameOver = true;
+  }
+  if (!gameOver) {
+    console.log("Congratulations! You WIN!");
+    process.exit(0);
+  }
 }
 
 // reveals ship type, and if it was hit or miss
@@ -85,29 +98,25 @@ function printBoard(board) {
 
 // GAME STARTS HERE // GAME STARTS HERE // GAME STARTS HERE // GAME STARTS HERE // GAME STARTS HERE //
 
+gameOver = false;
+
 //prompt 1
 console.log("Welcome to Battleship!");
 reveal(board3);
-/* const wantToPlay = readlineSync.keyInYN("Would you like to play?");
+const wantToPlay = readlineSync.keyInYN("Would you like to play?");
 if (!wantToPlay) {
   console.log("Fine! I didnt want to play either 🥲");
   process.exit(0);
-} */
-
-let gameOver = false;
-
-while (gameOver === false) {
-  function guessCoord() {
-    let userInput = readlineSync.question("Type in your coordinate!");
-
-    while (!userInput.match(/[A-C][0-2]/i)) {
-      userInput = readlineSync.question("Please type in a valid coordinate!");
-    }
-    if (userInput.match(/[A-C][0-2]/i)) {
-      console.log("the coordinate works");
-    }
-  }
-  guessCoord();
 }
 
-const [] = [];
+function guessCoord() {
+  let userInput = readlineSync.question("Type in your coordinate!");
+
+  while (!userInput.match(/[A-C][0-2]/i)) {
+    userInput = readlineSync.question("Please type in a valid coordinate!");
+  }
+  if (userInput.match(/[A-C][0-2]/i)) {
+    console.log("the coordinate works");
+  }
+}
+guessCoord();
