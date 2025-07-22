@@ -42,7 +42,7 @@ console.log("Welcome to Battleship!");
 let userInput = readlineSync.question("Type in your coordinate!");
 
 let rowIndex = rowMap[userInput[0].toUpperCase()];
-let colIndex = userInput[1];
+let colIndex = parseInt(userInput[1]);
 
 function guessCoord(board) {
   while (!userInput.match(/[A-C][0-2]/i)) {
@@ -50,16 +50,42 @@ function guessCoord(board) {
     rowIndex = rowMap[userInput[0].toUpperCase()];
     colIndex = userInput[1];
   }
-  if (userInput.match(/[A-C][0-2]/i)) {
-    console.log("the coordinate works");
-
-    function setHitTrue(board) {
-      for (userInput of board) {
-        board[rowIndex][colIndex].hit = true;
-      }
-    }
-    setHitTrue(board);
+  function setHitTrue(board) {
+    board[rowIndex][colIndex].hit = true;
+  }
+  setHitTrue(board);
+  if (board[rowIndex][colIndex].type === "large") {
+    console.log("hit ship");
   }
 }
 
+function reveal(board) {
+  let labeledBoard = {
+    A: [],
+    B: [],
+    C: [],
+  };
+
+  const rowLabels = ["A", "B", "C"];
+
+  // assigns symbol to cell
+  function getHitSymbol(board, row, col) {
+    if (board[row][col].type === "large" && board[row][col].hit) {
+      return hitLarge;
+    }
+    if (board[row][col].type === "small" && board[row][col].hit)
+      return hitSmall;
+    if (board[row][col].hit) return miss;
+    else return "-";
+  }
+
+  for (let row = 0; row < board.length; row++) {
+    for (let col = 0; col < board[row].length; col++) {
+      labeledBoard[rowLabels[row]][col] = getHitSymbol(board, row, col);
+    }
+  }
+  console.table(labeledBoard);
+}
+
 guessCoord(board3);
+reveal(board3);
