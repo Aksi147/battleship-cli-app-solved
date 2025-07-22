@@ -35,9 +35,15 @@ console.log("Welcome to Battleship!");
 
 // const wantToPlay = readlineSync.keyInYN("Would you like to play?");
 // if (!wantToPlay) {
-//   console.log("Fine! I didnt want to play either 🥲");
+//   console.log("Thats alright! Maybe next time! Bye!");
 //   process.exit(0);
 // }
+
+console.table({
+  A: ["-", "-", "-"],
+  B: ["-", "-", "-"],
+  C: ["-", "-", "-"],
+});
 
 let userInput = readlineSync.question("Type in your coordinate!");
 
@@ -53,39 +59,47 @@ function guessCoord(board) {
   function setHitTrue(board) {
     board[rowIndex][colIndex].hit = true;
   }
+
   setHitTrue(board);
+
   if (board[rowIndex][colIndex].type === "large") {
-    console.log("hit ship");
+    console.log("Great shot! You hit a large ship!");
   }
-}
+  if (board[rowIndex][colIndex].type === "small") {
+    console.log("Great shot! You hit a small ship!");
+  }
+  if (board[rowIndex][colIndex].type === "empty") {
+    console.log("Oh no! You missed!");
+  }
 
-function reveal(board) {
-  let labeledBoard = {
-    A: [],
-    B: [],
-    C: [],
-  };
+  function reveal(board) {
+    let labeledBoard = {
+      A: [],
+      B: [],
+      C: [],
+    };
 
-  const rowLabels = ["A", "B", "C"];
+    const rowLabels = ["A", "B", "C"];
 
-  // assigns symbol to cell
-  function getHitSymbol(board, row, col) {
-    if (board[row][col].type === "large" && board[row][col].hit) {
-      return hitLarge;
+    // assigns symbol to cell
+    function getHitSymbol(board, row, col) {
+      if (board[row][col].type === "large" && board[row][col].hit) {
+        return hitLarge;
+      }
+      if (board[row][col].type === "small" && board[row][col].hit)
+        return hitSmall;
+      if (board[row][col].hit) return miss;
+      else return "-";
     }
-    if (board[row][col].type === "small" && board[row][col].hit)
-      return hitSmall;
-    if (board[row][col].hit) return miss;
-    else return "-";
-  }
 
-  for (let row = 0; row < board.length; row++) {
-    for (let col = 0; col < board[row].length; col++) {
-      labeledBoard[rowLabels[row]][col] = getHitSymbol(board, row, col);
+    for (let row = 0; row < board.length; row++) {
+      for (let col = 0; col < board[row].length; col++) {
+        labeledBoard[rowLabels[row]][col] = getHitSymbol(board, row, col);
+      }
     }
+    console.table(labeledBoard);
   }
-  console.table(labeledBoard);
+  reveal(board3);
 }
 
 guessCoord(board3);
-reveal(board3);
