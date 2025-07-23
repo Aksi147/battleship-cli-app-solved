@@ -116,5 +116,29 @@ function allShipsDestroyed(board) {
   return true;
 }
 
+// reveals all ships
+function printBoard(board) {
+  function revealShip(cell) {
+    if (cell.type === "large") return hitLarge;
+    if (cell.type === "small") return hitSmall;
+    else return "-";
+  }
+
+  let labeledBoard = {
+    A: [],
+    B: [],
+    C: [],
+  };
+
+  const rowLabels = ["A", "B", "C"];
+
+  for (let row = 0; row < board.length; row++) {
+    for (let col = 0; col < board[row].length; col++) {
+      labeledBoard[rowLabels[row]][col] = revealShip(board[row][col]);
+    }
+  }
+  console.table(labeledBoard);
+}
+
 guessCoord(board3);
 process.exit(0);
