@@ -117,11 +117,19 @@ function allShipsDestroyed(board) {
 }
 
 // reveals all ships
-function printBoard(board) {
-  function revealShip(cell) {
-    if (cell.type === "large") return hitLarge;
-    if (cell.type === "small") return hitSmall;
-    else return "-";
+function printBoard(board, ToF) {
+  if (!ToF) {
+    function revealShip(cell) {
+      return "-";
+    }
+  }
+
+  if (ToF) {
+    function revealShip(cell) {
+      if (cell.type === "large") return hitLarge;
+      if (cell.type === "small") return hitSmall;
+      else return "-";
+    }
   }
 
   let labeledBoard = {
@@ -139,6 +147,7 @@ function printBoard(board) {
   }
   console.table(labeledBoard);
 }
+// printBoard(board3, true);
 
 guessCoord(board3);
 process.exit(0);
