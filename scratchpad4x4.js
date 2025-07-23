@@ -1,7 +1,12 @@
 const readlineSync = require("readline-sync");
-const { board4, board4x4 } = require("./boards");
-
-const rowMap = { A: 0, B: 1, C: 2, D: 3 };
+const {
+  board4,
+  board5,
+  board6,
+  board4x4,
+  board5x5,
+  board6x6,
+} = require("./boards");
 
 //prompt 1
 console.log("Welcome to Battleship!");
@@ -26,13 +31,16 @@ if (index === 0) {
 if (index === 1) {
   board = board5;
   console.table(board5x5);
+  guessCoord5x5(board);
 }
 if (index === 2) {
   board = board6;
   console.table(board6x6);
+  guessCoord6x6(board);
 }
 
 function guessCoord4x4(board) {
+  const rowMap = { A: 0, B: 1, C: 2, D: 3 };
   while (!allShipsDestroyed(board)) {
     let userInput = readlineSync.question("Type in your coordinate!");
 
@@ -68,6 +76,131 @@ function guessCoord4x4(board) {
       };
 
       const rowLabels = ["A", "B", "C", "D"];
+
+      // assigns symbol to cell
+      function getHitSymbol(board, row, col) {
+        if (board[row][col].type === "large" && board[row][col].hit) {
+          return hitLarge;
+        }
+        if (board[row][col].type === "small" && board[row][col].hit)
+          return hitSmall;
+        if (board[row][col].hit) return miss;
+        else return "-";
+      }
+
+      for (let row = 0; row < board.length; row++) {
+        for (let col = 0; col < board[row].length; col++) {
+          labeledBoard[rowLabels[row]][col] = getHitSymbol(board, row, col);
+        }
+      }
+      console.table(labeledBoard);
+    }
+    reveal(board);
+  }
+  console.log("Congrats! You WIN!!!");
+}
+
+function guessCoord5x5(board) {
+  const rowMap = { A: 0, B: 1, C: 2, D: 3, E: 4 };
+  while (!allShipsDestroyed(board)) {
+    let userInput = readlineSync.question("Type in your coordinate!");
+
+    let rowIndex = rowMap[userInput[0].toUpperCase()];
+    let colIndex = parseInt(userInput[1]);
+    while (!userInput.match(/[A-E][0-4]/i)) {
+      userInput = readlineSync.question("Please type in a valid coordinate!");
+      rowIndex = rowMap[userInput[0].toUpperCase()];
+      colIndex = userInput[1];
+    }
+    function setHitTrue(board) {
+      board[rowIndex][colIndex].hit = true;
+    }
+
+    setHitTrue(board);
+
+    if (board[rowIndex][colIndex].type === "large") {
+      console.log("Great shot! You hit a large ship!");
+    }
+    if (board[rowIndex][colIndex].type === "small") {
+      console.log("Great shot! You hit a small ship!");
+    }
+    if (board[rowIndex][colIndex].type === "empty") {
+      console.log("Oh no! You missed!");
+    }
+
+    function reveal(board) {
+      let labeledBoard = {
+        A: [],
+        B: [],
+        C: [],
+        D: [],
+        E: [],
+      };
+
+      const rowLabels = ["A", "B", "C", "D", "E"];
+
+      // assigns symbol to cell
+      function getHitSymbol(board, row, col) {
+        if (board[row][col].type === "large" && board[row][col].hit) {
+          return hitLarge;
+        }
+        if (board[row][col].type === "small" && board[row][col].hit)
+          return hitSmall;
+        if (board[row][col].hit) return miss;
+        else return "-";
+      }
+
+      for (let row = 0; row < board.length; row++) {
+        for (let col = 0; col < board[row].length; col++) {
+          labeledBoard[rowLabels[row]][col] = getHitSymbol(board, row, col);
+        }
+      }
+      console.table(labeledBoard);
+    }
+    reveal(board);
+  }
+  console.log("Congrats! You WIN!!!");
+}
+
+function guessCoord6x6(board) {
+  const rowMap = { A: 0, B: 1, C: 2, D: 3, E: 4, F: 5 };
+  while (!allShipsDestroyed(board)) {
+    let userInput = readlineSync.question("Type in your coordinate!");
+
+    let rowIndex = rowMap[userInput[0].toUpperCase()];
+    let colIndex = parseInt(userInput[1]);
+    while (!userInput.match(/[A-F][0-5]/i)) {
+      userInput = readlineSync.question("Please type in a valid coordinate!");
+      rowIndex = rowMap[userInput[0].toUpperCase()];
+      colIndex = userInput[1];
+    }
+    function setHitTrue(board) {
+      board[rowIndex][colIndex].hit = true;
+    }
+
+    setHitTrue(board);
+
+    if (board[rowIndex][colIndex].type === "large") {
+      console.log("Great shot! You hit a large ship!");
+    }
+    if (board[rowIndex][colIndex].type === "small") {
+      console.log("Great shot! You hit a small ship!");
+    }
+    if (board[rowIndex][colIndex].type === "empty") {
+      console.log("Oh no! You missed!");
+    }
+
+    function reveal(board) {
+      let labeledBoard = {
+        A: [],
+        B: [],
+        C: [],
+        D: [],
+        E: [],
+        F: [],
+      };
+
+      const rowLabels = ["A", "B", "C", "D", "E", "F"];
 
       // assigns symbol to cell
       function getHitSymbol(board, row, col) {
