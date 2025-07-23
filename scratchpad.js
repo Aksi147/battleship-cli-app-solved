@@ -45,61 +45,76 @@ console.table({
   C: ["-", "-", "-"],
 });
 
-let userInput = readlineSync.question("Type in your coordinate!");
-
-let rowIndex = rowMap[userInput[0].toUpperCase()];
-let colIndex = parseInt(userInput[1]);
-
 function guessCoord(board) {
-  while (!userInput.match(/[A-C][0-2]/i)) {
-    userInput = readlineSync.question("Please type in a valid coordinate!");
-    rowIndex = rowMap[userInput[0].toUpperCase()];
-    colIndex = userInput[1];
-  }
-  function setHitTrue(board) {
-    board[rowIndex][colIndex].hit = true;
-  }
+  while (!allShipsDestroyed(board)) {
+    let userInput = readlineSync.question("Type in your coordinate!");
 
-  setHitTrue(board);
-
-  if (board[rowIndex][colIndex].type === "large") {
-    console.log("Great shot! You hit a large ship!");
-  }
-  if (board[rowIndex][colIndex].type === "small") {
-    console.log("Great shot! You hit a small ship!");
-  }
-  if (board[rowIndex][colIndex].type === "empty") {
-    console.log("Oh no! You missed!");
-  }
-
-  function reveal(board) {
-    let labeledBoard = {
-      A: [],
-      B: [],
-      C: [],
-    };
-
-    const rowLabels = ["A", "B", "C"];
-
-    // assigns symbol to cell
-    function getHitSymbol(board, row, col) {
-      if (board[row][col].type === "large" && board[row][col].hit) {
-        return hitLarge;
-      }
-      if (board[row][col].type === "small" && board[row][col].hit)
-        return hitSmall;
-      if (board[row][col].hit) return miss;
-      else return "-";
+    let rowIndex = rowMap[userInput[0].toUpperCase()];
+    let colIndex = parseInt(userInput[1]);
+    while (!userInput.match(/[A-C][0-2]/i)) {
+      userInput = readlineSync.question("Please type in a valid coordinate!");
+      rowIndex = rowMap[userInput[0].toUpperCase()];
+      colIndex = userInput[1];
+    }
+    function setHitTrue(board) {
+      board[rowIndex][colIndex].hit = true;
     }
 
-    for (let row = 0; row < board.length; row++) {
-      for (let col = 0; col < board[row].length; col++) {
-        labeledBoard[rowLabels[row]][col] = getHitSymbol(board, row, col);
+    setHitTrue(board);
+
+    if (board[rowIndex][colIndex].type === "large") {
+      console.log("Great shot! You hit a large ship!");
+    }
+    if (board[rowIndex][colIndex].type === "small") {
+      console.log("Great shot! You hit a small ship!");
+    }
+    if (board[rowIndex][colIndex].type === "empty") {
+      console.log("Oh no! You missed!");
+    }
+
+    function reveal(board) {
+      let labeledBoard = {
+        A: [],
+        B: [],
+        C: [],
+      };
+
+      const rowLabels = ["A", "B", "C"];
+
+      // assigns symbol to cell
+      function getHitSymbol(board, row, col) {
+        if (board[row][col].type === "large" && board[row][col].hit) {
+          return hitLarge;
+        }
+        if (board[row][col].type === "small" && board[row][col].hit)
+          return hitSmall;
+        if (board[row][col].hit) return miss;
+        else return "-";
+      }
+
+      for (let row = 0; row < board.length; row++) {
+        for (let col = 0; col < board[row].length; col++) {
+          labeledBoard[rowLabels[row]][col] = getHitSymbol(board, row, col);
+        }
+      }
+      console.table(labeledBoard);
+    }
+    reveal(board3);
+  }
+  console.log("Congrats! You WIN!!!");
+}
+
+function allShipsDestroyed(board) {
+  for (let row = 0; row < board.length; row++) {
+    for (let col = 0; col < board[row].length; col++) {
+      let cell = board[row][col];
+      if (cell.type === "large" || cell.type === "small") {
+        if (!cell.hit) return false;
       }
     }
-    console.table(labeledBoard);
   }
-  reveal(board3);
+  return true;
 }
 
 guessCoord(board3);
+process.exit(0);
