@@ -28,8 +28,6 @@ const rowMap = { A: 0, B: 1, C: 2 };
 
 // GAME STARTS HERE // GAME STARTS HERE // GAME STARTS HERE // GAME STARTS HERE // GAME STARTS HERE //
 
-gameOver = false;
-
 //prompt 1
 console.log("Welcome to Battleship!");
 
