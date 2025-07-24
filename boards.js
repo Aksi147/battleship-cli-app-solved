@@ -139,6 +139,8 @@ let board6x6 = {
 
 module.exports = { board4, board5, board6, board4x4, board5x5, board6x6 };
 
+// debugger // debugger // debugger // debugger // debugger // debugger // debugger
+
 function printBoard(board, ToF) {
   const hitLarge = "🔵";
   const hitSmall = "🟠";
