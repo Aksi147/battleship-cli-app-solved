@@ -141,21 +141,19 @@ module.exports = { board4, board5, board6, board4x4, board5x5, board6x6 };
 
 // debugger // debugger // debugger // debugger // debugger // debugger // debugger
 
-function printBoard(board, ToF) {
+function printBoard(board, debugMode = false) {
   const hitLarge = "🔵";
   const hitSmall = "🟠";
-  if (!ToF) {
+  if (!debugMode) {
     function revealShip() {
       return "-";
     }
   }
 
-  if (ToF) {
-    function revealShip(cell) {
-      if (cell.type === "large") return hitLarge;
-      if (cell.type === "small") return hitSmall;
-      else return "-";
-    }
+  function revealShip(cell) {
+    if (cell.type === "large") return hitLarge;
+    if (cell.type === "small") return hitSmall;
+    else return "-";
   }
 
   let labeledBoard = {
@@ -176,4 +174,5 @@ function printBoard(board, ToF) {
   }
   console.table(labeledBoard);
 }
-// printBoard(board6, true);
+
+printBoard(board6);
