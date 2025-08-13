@@ -1,12 +1,12 @@
 const readlineSync = require("readline-sync");
-const { board4, board5, board6 } = require("./boards");
+const { board4, board5, board6, createBoardWithLabels } = require("./boards");
+const { rowLabels } = require("./config");
+const { actualBoard } = require("./runBattleship");
 
 // symbols for shot effect
 const hitLarge = "🔵";
 const hitSmall = "🟠";
 const miss = "❗";
-
-const rowLabels = ["A", "B", "C", "D", "E", "F"];
 
 const config = {
   boardSize: {
@@ -102,9 +102,10 @@ function allShipsDestroyed(board) {
   return true;
 }
 
-function guessCoord(size) {
-  const { board, rowLabels, labeledBoard, regex } = config.boardSize[size];
-  while (!allShipsDestroyed(board)) {
+function guessCoord(size, rowLabels) {
+  const labeledBoard = createBoardWithLabels(size, rowLabels, false);
+  const { board, regex } = config.boardSize[size];
+  while (!allShipsDestroyed(actualBoard)) {
     let userInput = readlineSync.question("Make a guess eg.. A1, B2, etc...");
     console.clear();
 

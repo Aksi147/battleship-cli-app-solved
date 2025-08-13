@@ -1,25 +1,27 @@
 const readlineSync = require("readline-sync");
-const { board4x4, board5x5, board6x6 } = require("./boards");
+const { createBoard, createBoardWithLabels } = require("./boards");
+const { boardsConfig, rowLabels } = require("./config");
 const { guessCoord } = require("./functions");
 
-//prompt 1
-console.log("Welcome to Battleship 🚢");
+const askForBoardSize = (boards) => {
+  console.log("Welcome to Battleship 🚢");
+  let index = readlineSync.keyInSelect(boards, "Choose a Board Size");
+  console.clear();
+  return index;
+};
 
-let boards = ["4x4", "5x5", "6x6"];
-let index = readlineSync.keyInSelect(boards, "Choose a Board Size");
-console.clear();
+const runBattleship = (boardsConfig, rowLabels) => {
+  const boards = boardsConfig.map((size) => `${size}x${size}`);
+  const index = askForBoardSize(boards);
 
-if (index === 0) {
-  console.table(board4x4);
-  guessCoord(4);
-}
-if (index === 1) {
-  console.table(board5x5);
-  guessCoord(5);
-}
-if (index === 2) {
-  console.table(board6x6);
-  guessCoord(6);
-}
+  const actualBoard = createBoardWithLabels(index + 4, rowLabels);
 
-process.exit(0);
+  if (index < boards.length - 1 && index >= 0) {
+    console.table(actualBoard);
+    // guessCoord(index + 4, rowLabels);
+  }
+  console.log(runBattleship(boardsConfig, rowLabels));
+  process.exit(0);
+};
+
+module.exports = { actualBoard };
