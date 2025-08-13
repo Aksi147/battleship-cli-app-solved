@@ -24,4 +24,6 @@ const runBattleship = (boardsConfig, rowLabels) => {
   process.exit(0);
 };
 
-module.exports = { actualBoard };
+module.exports = { actualBoard, askForBoardSize, runBattleship };
+
+https://grok.com/share/c2hhcmQtMg%3D%3D_997d8921-7233-4022-b7ae-bb1fcc657b6b
