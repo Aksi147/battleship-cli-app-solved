@@ -3,11 +3,6 @@ const { board4, board5, board6, createBoardWithLabels } = require("./boards");
 const { rowLabels } = require("./config");
 const { actualBoard } = require("./runBattleship");
 
-// symbols for shot effect
-const hitLarge = "🔵";
-const hitSmall = "🟠";
-const miss = "❗";
-
 const config = {
   boardSize: {
     4: {
@@ -64,28 +59,6 @@ function ascii() {
   );
 }
 
-const rowMap = { A: 0, B: 1, C: 2, D: 3, E: 4, F: 5 };
-
-function reveal(board, labeledBoard, rowLabels) {
-  // assigns symbol to cell
-  function getHitSymbol(board, row, col) {
-    if (board[row][col].type === "large" && board[row][col].hit) {
-      return hitLarge;
-    }
-    if (board[row][col].type === "small" && board[row][col].hit)
-      return hitSmall;
-    if (board[row][col].hit) return miss;
-    else return "-";
-  }
-
-  for (let row = 0; row < board.length; row++) {
-    for (let col = 0; col < board[row].length; col++) {
-      labeledBoard[rowLabels[row]][col] = getHitSymbol(board, row, col);
-    }
-  }
-  console.table(labeledBoard);
-}
-
 function setHitTrue(board, row, col) {
   board[row][col].hit = true;
 }
@@ -102,39 +75,88 @@ function allShipsDestroyed(board) {
   return true;
 }
 
-function guessCoord(size, rowLabels) {
-  const labeledBoard = createBoardWithLabels(size, rowLabels, false);
-  const { board, regex } = config.boardSize[size];
-  while (!allShipsDestroyed(actualBoard)) {
-    let userInput = readlineSync.question("Make a guess eg.. A1, B2, etc...");
+function reveal(board, labeledBoard, rowLabels, boardSize) {
+  const updatedBoard = { ...labeledBoard };
+  for (let row = 0; row < boardSize; row++) {
+    const label = rowLabels[row];
+    updatedBoard[label] = board[row].map((cell) => {
+      if (cell.hit) {
+        if (cell.type === "empty") {
+          return "❗";
+        } else if (cell.type === "large") {
+          return "🔵";
+        } else return "🟠";
+      }
+      return "-";
+    });
+  }
+  console.table(updatedBoard);
+}
+
+function guessCoord(board, labeledBoard, rowLabels, boardSize, regex) {
+  while (!allShipsDestroyed(board)) {
+    reveal(board, labeledBoard, rowLabels, boardSize);
+    let userInput = readlineSync
+      .question("Make a guess eg.. A1, B2, etc...")
+      .trim();
     console.clear();
 
-    let rowIndex = rowMap[userInput[0].toUpperCase()];
-    let colIndex = parseInt(userInput[1]);
-    while (!userInput.match(regex)) {
-      reveal(board, labeledBoard, rowLabels);
-      userInput = readlineSync.question(
-        "Make a valid guess eg.. A1, B2, etc..."
+    //validate input
+    if (!userInput.match(regex)) {
+      console.log(
+        `Invalid input! Please enter a valid coordinate (e.g. A1, B2, up to ${
+          rowLabels[boardSize - 1]
+        }${boardSize - 1}).`
       );
-      console.clear();
-      rowIndex = rowMap[userInput[0].toUpperCase()];
-      colIndex = userInput[1];
+      continue;
     }
 
-    if (board[rowIndex][colIndex].type === "large") {
-      console.log("Great shot! You hit a large ship!");
+    const rowLetter = userInput[0].toUpperCase();
+    const colInput = userInput.slice(1);
+
+    const rowIndex = rowLabels.indexOf(rowLetter);
+    if (rowIndex < 0 || rowIndex >= boardSize) {
+      console.log(
+        `Invalid row! Please enter a valid coordinate (e.g. A1, B2, up to ${
+          rowLabels[boardSize - 1]
+        }${boardSize - 1}).`
+      );
+      continue;
     }
-    if (board[rowIndex][colIndex].type === "small") {
-      console.log("Great shot! You hit a small ship!");
+
+    const colIndex = parseInt(colInput);
+    if (
+      isNaN(colIndex) ||
+      colInput !== colIndex.toString() ||
+      colIndex < 0 ||
+      colIndex >= boardSize
+    ) {
+      console.log(
+        `Invalid column! Please enter a valid coordinate (e.g. A1, B2, up to ${
+          rowLabels[boardSize - 1]
+        }${boardSize - 1}).`
+      );
+      continue;
     }
-    if (board[rowIndex][colIndex].type === "empty") {
-      console.log("Oh no! You missed!");
+
+    if (board[rowIndex][colIndex].hit) {
+      console.log("You already guessed this coordinate!");
+      continue;
     }
 
     setHitTrue(board, rowIndex, colIndex);
-    reveal(board, labeledBoard, rowLabels);
+
+    if (board[rowIndex][colIndex].type === "large") {
+      console.log("Great shot! You hit a large ship!");
+    } else if (board[rowIndex][colIndex].type === "small") {
+      console.log("Great shot! You hit a small ship!");
+    } else {
+      console.log("Oh no! You missed!");
+    }
+
+    // reveal(board, labeledBoard, rowLabels, boardSize);
   }
   ascii();
 }
 
-module.exports = { guessCoord };
+module.exports = { guessCoord, reveal, setHitTrue, allShipsDestroyed };

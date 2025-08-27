@@ -1,7 +1,11 @@
 const readlineSync = require("readline-sync");
-const { createBoard, createBoardWithLabels } = require("./boards");
-const { boardsConfig, rowLabels } = require("./config");
 const { guessCoord } = require("./functions");
+const {
+  createConfig,
+  boardsConfig,
+  rowLabels,
+  createBoardWithLabels,
+} = require("./testPage");
 
 const askForBoardSize = (boards) => {
   console.log("Welcome to Battleship 🚢");
@@ -14,16 +18,18 @@ const runBattleship = (boardsConfig, rowLabels) => {
   const boards = boardsConfig.map((size) => `${size}x${size}`);
   const index = askForBoardSize(boards);
 
-  const actualBoard = createBoardWithLabels(index + 4, rowLabels);
-
-  if (index < boards.length - 1 && index >= 0) {
-    console.table(actualBoard);
-    // guessCoord(index + 4, rowLabels);
+  if (index < 0) {
+    console.log("Game exited.");
+    process.exit(0);
   }
-  console.log(runBattleship(boardsConfig, rowLabels));
-  process.exit(0);
+
+  const size = parseInt(boardsConfig[index]);
+  const config = createConfig(boardsConfig, rowLabels);
+  const { board, labeledBoard, regex } = config.boardSize[size];
+
+  guessCoord(board, labeledBoard, rowLabels.slice(0, size), size, regex);
 };
 
-module.exports = { actualBoard, askForBoardSize, runBattleship };
+runBattleship(boardsConfig, rowLabels);
 
-https://grok.com/share/c2hhcmQtMg%3D%3D_997d8921-7233-4022-b7ae-bb1fcc657b6b
+module.exports = { askForBoardSize, runBattleship };

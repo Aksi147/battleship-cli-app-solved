@@ -26,6 +26,48 @@ const createBoardWithLabels = (size, withItems = true) => {
   }, {});
 };
 
+const placeShipsRandomly = (board, ships, boardSize) => {
+  const newBoard = board.map((row) =>
+    row.map((cell) => ({ type: "empty", hit: false }))
+  );
+
+  ships.forEach((ship) => {
+    let placed = false;
+    while (!placed) {
+      //randomly chose horizontal (0) or vertical (1)
+      const isHorizontal = Math.random() < 0.5;
+      //random starting position, ensuring ship fits
+      const maxRow = isHorizontal ? boardSize : boardSize - ship.size + 1;
+      const maxCol = isHorizontal ? boardSize - ship.size + 1 : boardSize;
+      const row = Math.floor(Math.random() * maxRow);
+      const col = Math.floor(Math.random() * maxCol);
+
+      let valid = true;
+      for (let i = 0; i < ship.size; i++) {
+        const r = isHorizontal ? row : row + i;
+        const c = isHorizontal ? col + i : col;
+        if (
+          r >= boardSize ||
+          c >= boardSize ||
+          newBoard[r][c].type !== "empty"
+        ) {
+          valid = false;
+          break;
+        }
+      }
+      if (valid) {
+        for (let i = 0; i < ship.size; i++) {
+          const r = isHorizontal ? row : row + i;
+          const c = isHorizontal ? col + i : col;
+          newBoard[r][c] = { type: ship.type, hit: false };
+        }
+        placed = true;
+      }
+    }
+  });
+  return newBoard;
+};
+
 const createConfig = (boardsConfig, rowLabels) => {
   const resObj = {
     boardSize: {},
@@ -42,5 +84,13 @@ const createConfig = (boardsConfig, rowLabels) => {
   return resObj;
 };
 
-console.log(createBoardWithLabels(4));
-console.log(createConfig(boardsConfig, rowLabels));
+// console.log(createBoardWithLabels(4));
+// console.log(createConfig(boardsConfig, rowLabels));
+
+module.exports = {
+  createBoard,
+  createBoardWithLabels,
+  createConfig,
+  boardsConfig,
+  rowLabels,
+};

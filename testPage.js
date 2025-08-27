@@ -1,5 +1,37 @@
 const rowLabels = "abcdefghijklmnop".toUpperCase().split("");
-const boardsConfig = ["4", "5", "6"];
+const boardsConfig = ["4", "5", "6", "7", "8", "9"];
+
+const getShipsForBoardSize = (boardSize) => {
+  switch (boardSize) {
+    case 4:
+      return [
+        { type: "large", size: 3 },
+        { type: "small", size: 2 },
+      ];
+    case 5:
+      return [
+        { type: "large", size: 3 },
+        { type: "small", size: 2 },
+        { type: "small", size: 2 },
+      ];
+    case 6:
+      return [
+        { type: "large", size: 3 },
+        { type: "large", size: 3 },
+        { type: "small", size: 2 },
+        { type: "small", size: 2 },
+      ];
+    default:
+      return [
+        { type: "large", size: 3 },
+        { type: "large", size: 3 },
+        { type: "small", size: 2 },
+        { type: "small", size: 2 },
+        { type: "small", size: 2 },
+        { type: "small", size: 2 },
+      ];
+  }
+};
 
 const emptyCell = () => {
   return { type: "empty", hit: false };
@@ -22,12 +54,6 @@ const createBoardWithLabels = (size, withItems = true) => {
     };
   }, {});
 };
-
-const ships = [
-  { type: "large", size: 3 },
-  { type: "small", size: 2 },
-  { type: "small", size: 2 },
-];
 
 const placeShipsRandomly = (board, ships, boardSize) => {
   const newBoard = board.map((row) =>
@@ -79,12 +105,20 @@ const createConfig = (boardsConfig, rowLabels) => {
   boardsConfig.forEach((item) => {
     const size = parseInt(item);
     const board = createBoard(size);
+    const ships = getShipsForBoardSize(size);
     resObj.boardSize[item] = {
       board: placeShipsRandomly(board, ships, size),
       rowLabels: rowLabels.slice(0, parseInt(item)),
       labeledBoard: createBoardWithLabels(parseInt(item), rowLabels),
-      regex: `/[A-${rowLabels[size - 1]}][0-${size - 1}]/i`,
+      regex: new RegExp(`[A-${rowLabels[size - 1]}][0-${size - 1}]`, "i"),
     };
   });
   return resObj;
+};
+
+module.exports = {
+  createConfig,
+  boardsConfig,
+  rowLabels,
+  createBoardWithLabels,
 };
