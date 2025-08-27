@@ -1,11 +1,6 @@
 const readlineSync = require("readline-sync");
-const { guessCoord } = require("./functions");
-const {
-  createConfig,
-  boardsConfig,
-  rowLabels,
-  createBoardWithLabels,
-} = require("./testPage");
+const { guessCoord } = require("./coordinateFunctions");
+const { createConfig, boardsConfig, rowLabels } = require("./boardConfig");
 
 const askForBoardSize = (boards) => {
   console.log("Welcome to Battleship 🚢");

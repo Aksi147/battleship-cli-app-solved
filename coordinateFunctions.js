@@ -1,48 +1,4 @@
 const readlineSync = require("readline-sync");
-const { board4, board5, board6, createBoardWithLabels } = require("./boards");
-const { rowLabels } = require("./config");
-const { actualBoard } = require("./runBattleship");
-
-const config = {
-  boardSize: {
-    4: {
-      board: board4,
-      rowLabels: rowLabels.slice(0, 4),
-      labeledBoard: {
-        A: [],
-        B: [],
-        C: [],
-        D: [],
-      },
-      regex: /[A-D][0-3]/i,
-    },
-    5: {
-      board: board5,
-      rowLabels: rowLabels.slice(0, 5),
-      labeledBoard: {
-        A: [],
-        B: [],
-        C: [],
-        D: [],
-        E: [],
-      },
-      regex: /[A-E][0-4]/i,
-    },
-    6: {
-      board: board6,
-      rowLabels,
-      labeledBoard: {
-        A: [],
-        B: [],
-        C: [],
-        D: [],
-        E: [],
-        F: [],
-      },
-      regex: /[A-F][0-5]/i,
-    },
-  },
-};
 
 function ascii() {
   console.log(
@@ -153,8 +109,6 @@ function guessCoord(board, labeledBoard, rowLabels, boardSize, regex) {
     } else {
       console.log("Oh no! You missed!");
     }
-
-    // reveal(board, labeledBoard, rowLabels, boardSize);
   }
   ascii();
 }

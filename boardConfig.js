@@ -1,8 +1,37 @@
 const rowLabels = "abcdefghijklmnop".toUpperCase().split("");
+const boardsConfig = ["4", "5", "6", "7", "8", "9"];
 
-// console.log(labels)
-
-const boardsConfig = ["4", "5", "6"];
+const getShipsForBoardSize = (boardSize) => {
+  switch (boardSize) {
+    case 4:
+      return [
+        { type: "large", size: 3 },
+        { type: "small", size: 2 },
+      ];
+    case 5:
+      return [
+        { type: "large", size: 3 },
+        { type: "small", size: 2 },
+        { type: "small", size: 2 },
+      ];
+    case 6:
+      return [
+        { type: "large", size: 3 },
+        { type: "large", size: 3 },
+        { type: "small", size: 2 },
+        { type: "small", size: 2 },
+      ];
+    default:
+      return [
+        { type: "large", size: 3 },
+        { type: "large", size: 3 },
+        { type: "small", size: 2 },
+        { type: "small", size: 2 },
+        { type: "small", size: 2 },
+        { type: "small", size: 2 },
+      ];
+  }
+};
 
 const emptyCell = () => {
   return { type: "empty", hit: false };
@@ -34,9 +63,8 @@ const placeShipsRandomly = (board, ships, boardSize) => {
   ships.forEach((ship) => {
     let placed = false;
     while (!placed) {
-      //randomly chose horizontal (0) or vertical (1)
       const isHorizontal = Math.random() < 0.5;
-      //random starting position, ensuring ship fits
+
       const maxRow = isHorizontal ? boardSize : boardSize - ship.size + 1;
       const maxCol = isHorizontal ? boardSize - ship.size + 1 : boardSize;
       const row = Math.floor(Math.random() * maxRow);
@@ -73,23 +101,21 @@ const createConfig = (boardsConfig, rowLabels) => {
     boardSize: {},
   };
 
-  boardsConfig.map((item) => {
+  boardsConfig.forEach((item) => {
+    const size = parseInt(item);
+    const board = createBoard(size);
+    const ships = getShipsForBoardSize(size);
     resObj.boardSize[item] = {
-      board: createBoard(parseInt(item)),
+      board: placeShipsRandomly(board, ships, size),
       rowLabels: rowLabels.slice(0, parseInt(item)),
       labeledBoard: createBoardWithLabels(parseInt(item), rowLabels),
-      regex: `/[A-${rowLabels[parseInt(item - 1)]}][0-${parseInt(item)}]/i`,
+      regex: new RegExp(`[A-${rowLabels[size - 1]}][0-${size - 1}]`, "i"),
     };
   });
   return resObj;
 };
 
-// console.log(createBoardWithLabels(4));
-// console.log(createConfig(boardsConfig, rowLabels));
-
 module.exports = {
-  createBoard,
-  createBoardWithLabels,
   createConfig,
   boardsConfig,
   rowLabels,
